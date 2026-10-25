@@ -1,4 +1,4 @@
-# Capture Tweet
+# Capture
 
 Pose une capture d'écran de post (X, Threads, Bluesky…) sur un fond coloré et l'exporte en PNG, prête à partager.
 
@@ -13,7 +13,7 @@ Tout se passe dans le navigateur : aucune image n'est envoyée nulle part. Aprè
 3. Choisir un **fond** parmi les vingt teintes inspirées de la gamme Apple (iPhone, iMac, MacBook Air, iPad Air).
 4. **Enregistrer ou partager** ouvre la feuille de partage d'iOS. Sinon, fais un appui long sur l'aperçu pour l'enregistrer dans Photos.
 
-Les réglages (rognage, fond) sont gardés d'une visite à l'autre.
+Les réglages (rognage, fond) sont gardés d'une visite à l'autre. Le bouton statistiques, à côté du titre, affiche le nombre d'images traitées sur l'appareil.
 
 ### Sur iPhone
 
@@ -45,4 +45,4 @@ Puis ouvrir http://localhost:8000.
 
 Le site est publié par GitHub Pages depuis la branche `main`.
 
-**Après chaque modification de `index.html`**, augmenter la version du cache dans `sw.js` (`capture-v4` → `capture-v5`). Sinon, les appareils qui ont déjà installé l'app continuent d'afficher l'ancienne version.
+**Après chaque modification de `index.html`**, augmenter la version du cache dans `sw.js` (`capture-v6` → `capture-v7`). Sinon, les appareils qui ont déjà installé l'app continuent d'afficher l'ancienne version.

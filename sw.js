@@ -1,6 +1,6 @@
 // Garde l'outil en mémoire pour qu'il marche hors ligne.
 // Après une modification de index.html, augmente le numéro de version ci-dessous.
-const CACHE = 'capture-v5';
+const CACHE = 'capture-v6';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon-180.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {

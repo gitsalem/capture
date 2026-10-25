@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-512.png">
-<title>Capture Tweet</title>
+<title>Capture</title>
 <style>
 /* Un seul écran, sans défilement : l'aperçu prend toute la place libre,
    les réglages tiennent dans un bandeau compact en bas, sous le pouce. */
@@ -32,7 +32,15 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px
 main{flex:1;min-height:0;width:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 .head{display:flex;align-items:center;justify-content:space-between;gap:12px}
 h1{font-size:18px;font-weight:650;margin:0;letter-spacing:-.01em}
-.count{display:block;font-size:12px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+.title{display:flex;align-items:center;gap:8px}
+.statsbtn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--muted);cursor:pointer}
+.statsbtn svg{width:16px;height:16px}
+.stats{border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--fg);padding:22px 20px 16px;width:min(300px,calc(100% - 32px));text-align:center;font-family:var(--font)}
+.stats::backdrop{background:rgba(0,0,0,.55)}
+.stats h2{margin:0 0 14px;font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.stats .num{display:block;font-size:44px;font-weight:700;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.stats .lbl{display:block;margin-top:6px;font-size:14px;color:var(--muted)}
+.stats button{margin-top:20px;width:100%;padding:11px;border:none;border-radius:10px;background:var(--fg);color:var(--bg);font:inherit;font-weight:600;font-size:15px;cursor:pointer}
 .pick{position:relative;display:inline-flex;align-items:center;background:var(--fg);color:var(--bg);border-radius:10px;padding:8px 14px;font-weight:600;font-size:15px;cursor:pointer;white-space:nowrap}
 /* Invisible mais toujours dans l'ordre de tabulation (hidden le retirerait du clavier). */
 .pick input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
@@ -69,9 +77,11 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 
 <main>
   <div class="head">
-    <div>
-      <h1>Capture Tweet</h1>
-      <span class="count" id="count"></span>
+    <div class="title">
+      <h1>Capture</h1>
+      <button class="statsbtn" id="statsBtn" type="button" aria-label="Statistiques" aria-haspopup="dialog">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="2" y="8" width="3" height="6" rx="1"/><rect x="6.5" y="4" width="3" height="10" rx="1"/><rect x="11" y="1.5" width="3" height="12.5" rx="1"/></svg>
+      </button>
     </div>
     <label class="pick">Choisir une capture<input id="file" type="file" accept="image/*"></label>
   </div>
@@ -90,9 +100,16 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
     <div class="swatches" id="swatches" role="group" aria-label="Fonds"></div>
 
     <button class="export" id="export" type="button">Enregistrer ou partager</button>
-    <p id="status" role="status">Appui long sur l'image : l'enregistrer dans Photos.</p>
+    <p id="status" role="status"></p>
   </div>
 </main>
+
+<dialog class="stats" id="stats" aria-labelledby="statsTitle">
+  <h2 id="statsTitle">Statistiques</h2>
+  <span class="num" id="count">0</span>
+  <span class="lbl" id="countLbl">image traitée</span>
+  <button type="button" id="statsClose">Fermer</button>
+</dialog>
 
 <script>
 (() => {
@@ -137,8 +154,16 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
 
   // Compteur des captures traitées, gardé d'une visite à l'autre.
   let count = mem.get('count', 0);
-  function showCount(){ $('count').textContent = count + (count > 1 ? ' images traitées' : ' image traitée'); }
+  function showCount(){
+    $('count').textContent = count.toLocaleString('fr-FR');
+    $('countLbl').textContent = count > 1 ? 'images traitées' : 'image traitée';
+  }
   showCount();
+  const stats = $('stats');
+  $('statsBtn').addEventListener('click', () => stats.showModal());
+  $('statsClose').addEventListener('click', () => stats.close());
+  // Un toucher hors de la carte (sur le fond assombri) la ferme aussi.
+  stats.addEventListener('click', e => { if(e.target === stats) stats.close(); });
 
   $('top').value = mem.get('top', 0);
   $('bot').value = mem.get('bot', 0);
@@ -200,7 +225,7 @@ input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;bac
       src = im; isExample = false; $('tag').hidden = true;
       fileName = (f.name || 'capture').replace(/\.[^.]+$/, '');
       count++; mem.set('count', count); showCount();
-      $('status').textContent = "Appui long sur l'image : l'enregistrer dans Photos.";
+      $('status').textContent = '';
       render();
     };
     im.onerror = () => {
