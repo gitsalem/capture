@@ -45,4 +45,4 @@ Puis ouvrir http://localhost:8000.
 
 Le site est publié par GitHub Pages depuis la branche `main`.
 
-**Après chaque modification de `index.html`**, augmenter la version du cache dans `sw.js` (`capture-v6` → `capture-v7`). Sinon, les appareils qui ont déjà installé l'app continuent d'afficher l'ancienne version.
+**Après chaque modification de `index.html`**, augmenter la version du cache dans `sw.js` (`capture-v7` → `capture-v8`). Sinon, les appareils qui ont déjà installé l'app continuent d'afficher l'ancienne version.
